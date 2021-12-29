@@ -55,12 +55,12 @@ im_sleeping = [tk.PhotoImage(file=sleeping_names[i]) for i in range(len(sleeping
 im_idle_sleeping = [tk.PhotoImage(file=idle_sleeping_names[i]) for i in range(len(idle_sleeping_names))]
 im_sleeping_idle = [tk.PhotoImage(file=sleeping_idle_names[i]) for i in range(len(sleeping_idle_names))]
 
-
+x = 1000
 
 
 def f_idle(it):
     img = im_idle[it]
-    root.geometry("100x100+500+300")
+    root.geometry("100x100+"+str(x)+"+300")
     label.config(image=img)
     if it+1 < 4:
         it+=1
@@ -68,7 +68,9 @@ def f_idle(it):
 
 def f_left(it):
     img = im_left[it]
-    root.geometry("100x100+500+300")
+    global x
+    x-=3
+    root.geometry("100x100+"+str(x)+"+300")
     label.config(image=img)
     if it+1 < 4:
         it+=1
@@ -77,7 +79,9 @@ def f_left(it):
 
 def f_right(it):
     img = im_right[it]
-    root.geometry("100x100+500+300")
+    global x
+    x+=3
+    root.geometry("100x100+"+str(x)+"+300")
     label.config(image=img)
     if it+1 < 4:
         it+=1
@@ -85,7 +89,7 @@ def f_right(it):
     
 def f_sleeping(it):
     img = im_sleeping[it]
-    root.geometry("100x100+500+300")
+    root.geometry("100x100+"+str(x)+"+300")
     label.config(image=img)
     if it+1 < 4:
         it+=1
@@ -93,7 +97,7 @@ def f_sleeping(it):
 
 def f_idle_sleeping(it):
     img = im_idle_sleeping[it]
-    root.geometry("100x100+500+300")
+    root.geometry("100x100+"+str(x)+"+300")
     label.config(image=img)
     if it+1 < 4:
         it+=1
@@ -101,7 +105,7 @@ def f_idle_sleeping(it):
 
 def f_sleeping_idle(it):
     img = im_sleeping_idle[it]
-    root.geometry("100x100+500+300")
+    root.geometry("100x100+"+str(x)+"+300")
     label.config(image=img)
     if it+1 < 4:
         it+=1
@@ -112,7 +116,7 @@ def action(event_num):
 
     if event_num == 0:
         f_idle(0)
-        root.after(100000000, event_choice, prev_event)
+        root.after(1000, event_choice, prev_event)
 
     if event_num == 1:
         f_left(0)
@@ -123,16 +127,16 @@ def action(event_num):
         root.after(1000, event_choice, prev_event)
 
     if event_num == 3:
-        f_sleeping
-        root.after(100000000, event_choice, prev_event)
+        f_sleeping(0)
+        root.after(1000, event_choice, prev_event)
 
     if event_num == 4:
-        f_idle_sleeping
+        f_idle_sleeping(0)
         root.after(1000, event_choice, prev_event)
         
 
     if event_num == 5:
-        f_sleeping_idle
+        f_sleeping_idle(0)
         root.after(1000, event_choice, prev_event)
 
 
