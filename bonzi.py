@@ -17,7 +17,7 @@ root.config(highlightbackground='black')
 label = tk.Label(root, bd=0,bg='black')
 label.pack(side=TOP)
 
-dialogue_box = tk.Label(root, bd=0, bg='red', height=10, text='test')
+dialogue_box = tk.Label(root, bd=0, bg='black', fg='white', height=10)
 dialogue_box.pack(side=BOTTOM)
 
 m = tk.Menu(root, tearoff=0)
