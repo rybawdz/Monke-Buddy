@@ -1,8 +1,6 @@
 #GitHub test
-from asyncio.tasks import sleep
 import tkinter as tk
 import random
-from tkinter.constants import BOTTOM, TOP
 import webbrowser as wb
 from collections import defaultdict as dd
 import threading
@@ -19,10 +17,9 @@ root.config(highlightbackground='black')
 label = tk.Label(root, bd=0,bg='black')
 label.place(relwidth=1, relheight=1, relx=0, rely=0)
 
-dialogue_box = tk.Label(root, bd=0, bg='black', fg='white', height=10, wraplength=100, font=('Arial', 6))
+dialogue_box = tk.Label(root, bd=0, bg='black', fg='white', wraplength=100, font=('Arial', 6))
 
 m = tk.Menu(root, tearoff=0)
-
 
 #dropdown menu options
 def menu_nuta():
@@ -37,12 +34,12 @@ def t_dad_joke():
     x = random.randint(0, len(jokes))
     dialogue_box.config(text=jokes[x].strip())
 
-    time.sleep(10)
+    time.sleep(8)
 
     dialogue_box.place_forget()
     f.close()
 def dad_joke():
-    x = threading.Thread(target=t_dad_joke)
+    x = threading.Thread(target=t_dad_joke, daemon=True)
     x.start()
 m.add_command(label='Dad joke', command=dad_joke)
 
@@ -95,10 +92,8 @@ def event_choice(prev_event): #choosing next event
         event_num = [0]
     else:
         event_num = random.choices(events, weights=[0.0, 0.0, 0.0, 0.8, 0.0, 0.2])
-
     action(event_num[0])        
     
-
-root.after(1, event_choice, 0)
+event_choice(0)
 tk.mainloop()
     
