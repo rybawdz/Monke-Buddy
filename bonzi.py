@@ -15,10 +15,10 @@ height = root.winfo_screenheight()
 
 root.config(highlightbackground='black')
 label = tk.Label(root, bd=0,bg='black')
-label.pack()
+label.place(relwidth=1, relheight=1, relx=0, rely=0)
 
 dialogue_box = tk.Label(root, bd=0, bg='black', fg='white', height=10)
-dialogue_box.pack(side=BOTTOM)
+dialogue_box.place(anchor='s', relheight=0.2, relwidth=1, relx=0.5, rely=1)
 
 m = tk.Menu(root, tearoff=0)
 
@@ -32,10 +32,10 @@ dialogue_box_visible = True
 def toggle_dialogue_box():
     global dialogue_box_visible
     if dialogue_box_visible:
-        dialogue_box.pack_forget()
+        dialogue_box.place_forget()
         dialogue_box_visible = False
     else:
-        dialogue_box.pack(side=BOTTOM)
+        dialogue_box.place(anchor='s', relheight=0.2, relwidth=1, relx=0.5, rely=1)
         dialogue_box_visible = True
 m.add_command(label='Toggle dialogue box', command=toggle_dialogue_box)
 
@@ -69,7 +69,7 @@ x = 1000
 #working animation for static events
 def f_static(event, it):
     img = im_frames[event][it]
-    root.geometry("100x110+"+str(x)+"+300")
+    root.geometry("100x100+"+str(x)+"+300")
     label.config(image=img)
     dialogue_box.config(text=event)
     if it+1 < 4:
@@ -80,7 +80,7 @@ def f_left(it):
     img = im_frames['left'][it]
     global x
     x-=3
-    root.geometry("100x110+"+str(x)+"+300")
+    root.geometry("100x100+"+str(x)+"+300")
     dialogue_box.config(text='left')
     label.config(image=img)
     if it+1 < 4:
@@ -91,7 +91,7 @@ def f_right(it):
     img = im_frames['right'][it]
     global x
     x+=3
-    root.geometry("100x110+"+str(x)+"+300")
+    root.geometry("100x100+"+str(x)+"+300")
     dialogue_box.config(text='right')
     label.config(image=img)
     if it+1 < 4:
