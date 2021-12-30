@@ -2,6 +2,7 @@
 import tkinter as tk
 import random
 import webbrowser as wb
+from collections import defaultdict as dd
 
 im_path = "temp_sprites/"
 
@@ -37,50 +38,38 @@ def do_popup(event):
         m.grab_release()
 label.bind('<Button-3>', do_popup)
 
+#arrays of names of events
+event_names = ["idle", "left" ,"right" , "sleeping", "idle_to_sleeping", "sleeping_to_idle"]
 
-
-#arrays of names of frames
-event_names = ["im_idle", "im_left" ,"im_right" , "im_sleeping", "im_idle_sleeping", "im_sleeping_idle"]
-
-
-idle_names = [im_path + "idle"+ str(i) + ".png" for i in range(1,5)]
-left_names = [im_path + "move_left"+ str(i) + ".png" for i in range(1,5)]
-right_names = [im_path + "move_right"+ str(i) + ".png" for i in range(1,5)]
-sleeping_names = [im_path + "sleeping"+ str(i) + ".png" for i in range(1,5)]
-idle_sleeping_names = [im_path + "idle_to_sleeping"+ str(i) + ".png" for i in range(1,5)]
-sleeping_idle_names = [im_path + "sleeping_to_idle"+ str(i) + ".png" for i in range(1,5)]
-
-im_idle = [tk.PhotoImage(file=idle_names[i]) for i in range(len(idle_names))]
-im_left = [tk.PhotoImage(file=left_names[i]) for i in range(len(left_names))]
-im_right = [tk.PhotoImage(file=right_names[i]) for i in range(len(right_names))]
-im_sleeping = [tk.PhotoImage(file=sleeping_names[i]) for i in range(len(sleeping_names))]
-im_idle_sleeping = [tk.PhotoImage(file=idle_sleeping_names[i]) for i in range(len(idle_sleeping_names))]
-im_sleeping_idle = [tk.PhotoImage(file=sleeping_idle_names[i]) for i in range(len(sleeping_idle_names))]
+#dictionary of animation frames for each event
+im_frames = dd(lambda:[])
+for event_name in event_names:
+    for i in range(1, 5):
+        img = im_path + event_name + str(i) + ".png"
+        im_frames[event_name].append(tk.PhotoImage(file=img))
 
 x = 1000
 
-
-def f_idle(it):
-    img = im_idle[it]
+def f_static(event, it):
+    img = im_frames[event][it]
     root.geometry("100x100+"+str(x)+"+300")
     label.config(image=img)
     if it+1 < 4:
         it+=1
-        root.after(100,f_idle,it)
+        root.after(100, f_static, event, it)
 
 def f_left(it):
-    img = im_left[it]
+    img = im_frames['left'][it]
     global x
     x-=3
     root.geometry("100x100+"+str(x)+"+300")
     label.config(image=img)
     if it+1 < 4:
         it+=1
-        root.after(100,f_left,it)
+        root.after(100, f_left, it)
   
-
 def f_right(it):
-    img = im_right[it]
+    img = im_frames['right'][it]
     global x
     x+=3
     root.geometry("100x100+"+str(x)+"+300")
@@ -88,36 +77,12 @@ def f_right(it):
     if it+1 < 4:
         it+=1
         root.after(100,f_right,it)
-    
-def f_sleeping(it):
-    img = im_sleeping[it]
-    root.geometry("100x100+"+str(x)+"+300")
-    label.config(image=img)
-    if it+1 < 4:
-        it+=1
-        root.after(100,f_sleeping,it)
-
-def f_idle_sleeping(it):
-    img = im_idle_sleeping[it]
-    root.geometry("100x100+"+str(x)+"+300")
-    label.config(image=img)
-    if it+1 < 4:
-        it+=1
-        root.after(100,f_idle_sleeping,it)
-
-def f_sleeping_idle(it):
-    img = im_sleeping_idle[it]
-    root.geometry("100x100+"+str(x)+"+300")
-    label.config(image=img)
-    if it+1 < 4:
-        it+=1
-        root.after(100,f_sleeping_idle,it)
 
 def action(event_num):
     prev_event = event_num
 
-    if event_num == 0:
-        f_idle(0)
+    if event_num in {0, 3, 4, 5}:
+        f_static(event_names[event_num], 0)
         root.after(1000, event_choice, prev_event)
 
     if event_num == 1:
@@ -127,21 +92,6 @@ def action(event_num):
     if event_num == 2:
         f_right(0)
         root.after(1000, event_choice, prev_event)
-
-    if event_num == 3:
-        f_sleeping(0)
-        root.after(1000, event_choice, prev_event)
-
-    if event_num == 4:
-        f_idle_sleeping(0)
-        root.after(1000, event_choice, prev_event)
-        
-
-    if event_num == 5:
-        f_sleeping_idle(0)
-        root.after(1000, event_choice, prev_event)
-
-
 
 def event_choice(prev_event): #wybiera kolejny event
     #idle, move_left, move_right, sleeping, idle_to_sleeping, sleeping_to_idle
