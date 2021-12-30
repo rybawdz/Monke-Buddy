@@ -3,6 +3,8 @@ import tkinter as tk
 import random
 import webbrowser as wb
 
+im_path = "temp_sprites/"
+
 root = tk.Tk()
 width = root.winfo_screenwidth()
 height = root.winfo_screenheight()
@@ -41,12 +43,12 @@ label.bind('<Button-3>', do_popup)
 event_names = ["im_idle", "im_left" ,"im_right" , "im_sleeping", "im_idle_sleeping", "im_sleeping_idle"]
 
 
-idle_names = ["idle"+ str(i) + ".png" for i in range(1,5)]
-left_names = ["move_left"+ str(i) + ".png" for i in range(1,5)]
-right_names = ["move_right"+ str(i) + ".png" for i in range(1,5)]
-sleeping_names = ["sleeping"+ str(i) + ".png" for i in range(1,5)]
-idle_sleeping_names = ["idle_to_sleeping"+ str(i) + ".png" for i in range(1,5)]
-sleeping_idle_names = ["sleeping_to_idle"+ str(i) + ".png" for i in range(1,5)]
+idle_names = [im_path + "idle"+ str(i) + ".png" for i in range(1,5)]
+left_names = [im_path + "move_left"+ str(i) + ".png" for i in range(1,5)]
+right_names = [im_path + "move_right"+ str(i) + ".png" for i in range(1,5)]
+sleeping_names = [im_path + "sleeping"+ str(i) + ".png" for i in range(1,5)]
+idle_sleeping_names = [im_path + "idle_to_sleeping"+ str(i) + ".png" for i in range(1,5)]
+sleeping_idle_names = [im_path + "sleeping_to_idle"+ str(i) + ".png" for i in range(1,5)]
 
 im_idle = [tk.PhotoImage(file=idle_names[i]) for i in range(len(idle_names))]
 im_left = [tk.PhotoImage(file=left_names[i]) for i in range(len(left_names))]
