@@ -4,6 +4,7 @@ import random
 import webbrowser as wb
 from collections import defaultdict as dd
 
+#path to sprites
 im_path = "temp_sprites/"
 
 root = tk.Tk()
@@ -18,7 +19,7 @@ label.pack()
 m = tk.Menu(root, tearoff=0)
 
 
-#opcje w menu
+#dropdown menu options
 def menu_nuta():
     wb.open("https://open.spotify.com/track/3VIJBrMpvimHEw5wtPh2wB?si=633932ef19b842e7")
 m.add_command(label='Dobra nuta', command=menu_nuta)
@@ -50,6 +51,7 @@ for event_name in event_names:
 
 x = 1000
 
+#working animation for static events
 def f_static(event, it):
     img = im_frames[event][it]
     root.geometry("100x100+"+str(x)+"+300")
@@ -93,7 +95,7 @@ def action(event_num):
         f_right(0)
         root.after(1000, event_choice, prev_event)
 
-def event_choice(prev_event): #wybiera kolejny event
+def event_choice(prev_event): #choosing next event
     #idle, move_left, move_right, sleeping, idle_to_sleeping, sleeping_to_idle
     events = [0, 1, 2, 3, 4, 5]
     if prev_event in {0, 1, 2}:
