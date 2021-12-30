@@ -1,9 +1,12 @@
 #GitHub test
+from asyncio.tasks import sleep
 import tkinter as tk
 import random
 from tkinter.constants import BOTTOM, TOP
 import webbrowser as wb
 from collections import defaultdict as dd
+import threading
+import time
 
 #path to sprites
 im_path = "temp_sprites/"
@@ -12,39 +15,35 @@ root = tk.Tk()
 width = root.winfo_screenwidth()
 height = root.winfo_screenheight()
 
-
 root.config(highlightbackground='black')
 label = tk.Label(root, bd=0,bg='black')
 label.place(relwidth=1, relheight=1, relx=0, rely=0)
 
-dialogue_box = tk.Label(root, bd=0, bg='black', fg='white', height=10)
-dialogue_box.place(anchor='s', relheight=0.2, relwidth=1, relx=0.5, rely=1)
+dialogue_box = tk.Label(root, bd=0, bg='black', fg='white', height=10, wraplength=100, font=('Arial', 6))
 
 m = tk.Menu(root, tearoff=0)
 
 
-#dropdown menu options
+#dropdown menu options (trzeba zmienic tak zeby sie asynchronicznie wykonywaly)
 def menu_nuta():
     wb.open("https://open.spotify.com/track/3VIJBrMpvimHEw5wtPh2wB?si=633932ef19b842e7")
 m.add_command(label='Dobra nuta', command=menu_nuta)
 
-dialogue_box_visible = True
-def toggle_dialogue_box():
-    global dialogue_box_visible
-    if dialogue_box_visible:
-        dialogue_box.place_forget()
-        dialogue_box_visible = False
-    else:
-        dialogue_box.place(anchor='s', relheight=0.2, relwidth=1, relx=0.5, rely=1)
-        dialogue_box_visible = True
-m.add_command(label='Toggle dialogue box', command=toggle_dialogue_box)
-
-def dad_joke():
+def t_dad_joke():
     f = open('jokes.txt', 'r', encoding='Utf-8')
+    dialogue_box.place(anchor='s', relheight=0.4, relwidth=1, relx=0.5, rely=1)
+
     jokes = f.readlines()
     x = random.randint(0, len(jokes))
-    print(jokes[x].strip())
+    dialogue_box.config(text=jokes[x].strip())
+
+    time.sleep(10)
+
+    dialogue_box.place_forget()
     f.close()
+def dad_joke():
+    x = threading.Thread(target=t_dad_joke)
+    x.start()
 m.add_command(label='Dad joke', command=dad_joke)
 
 def do_popup(event):
@@ -76,7 +75,6 @@ def f_animation(event, it): #working animation for events
     img = im_frames[event][it]
     root.geometry("100x100+"+str(x)+"+300")
     label.config(image=img)
-    dialogue_box.config(text=event)
     if it+1 < 4:
         it+=1
         root.after(100, f_animation, event, it)
