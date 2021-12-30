@@ -1,6 +1,7 @@
 #GitHub test
 import tkinter as tk
 import random
+from tkinter.constants import BOTTOM, TOP
 import webbrowser as wb
 from collections import defaultdict as dd
 
@@ -14,7 +15,10 @@ height = root.winfo_screenheight()
 
 root.config(highlightbackground='black')
 label = tk.Label(root, bd=0,bg='black')
-label.pack()
+label.pack(side=TOP)
+
+dialogue_box = tk.Label(root, bd=0, bg='red', height=10, text='test')
+dialogue_box.pack(side=BOTTOM)
 
 m = tk.Menu(root, tearoff=0)
 
@@ -54,8 +58,9 @@ x = 1000
 #working animation for static events
 def f_static(event, it):
     img = im_frames[event][it]
-    root.geometry("100x100+"+str(x)+"+300")
+    root.geometry("100x110+"+str(x)+"+300")
     label.config(image=img)
+    dialogue_box.config(text=event)
     if it+1 < 4:
         it+=1
         root.after(100, f_static, event, it)
@@ -64,7 +69,8 @@ def f_left(it):
     img = im_frames['left'][it]
     global x
     x-=3
-    root.geometry("100x100+"+str(x)+"+300")
+    root.geometry("100x110+"+str(x)+"+300")
+    dialogue_box.config(text='left')
     label.config(image=img)
     if it+1 < 4:
         it+=1
@@ -74,7 +80,8 @@ def f_right(it):
     img = im_frames['right'][it]
     global x
     x+=3
-    root.geometry("100x100+"+str(x)+"+300")
+    root.geometry("100x110+"+str(x)+"+300")
+    dialogue_box.config(text='right')
     label.config(image=img)
     if it+1 < 4:
         it+=1
