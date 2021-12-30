@@ -67,51 +67,24 @@ for event_name in event_names:
 x = 1000
 
 #working animation for static events
-def f_static(event, it):
+def f_animation(event, it):
+    global x
+    if event == 'left':
+        x -= 3
+    elif event == 'right':
+        x += 3
     img = im_frames[event][it]
     root.geometry("100x100+"+str(x)+"+300")
     label.config(image=img)
     dialogue_box.config(text=event)
     if it+1 < 4:
         it+=1
-        root.after(100, f_static, event, it)
-
-def f_left(it):
-    img = im_frames['left'][it]
-    global x
-    x-=3
-    root.geometry("100x100+"+str(x)+"+300")
-    dialogue_box.config(text='left')
-    label.config(image=img)
-    if it+1 < 4:
-        it+=1
-        root.after(100, f_left, it)
-  
-def f_right(it):
-    img = im_frames['right'][it]
-    global x
-    x+=3
-    root.geometry("100x100+"+str(x)+"+300")
-    dialogue_box.config(text='right')
-    label.config(image=img)
-    if it+1 < 4:
-        it+=1
-        root.after(100,f_right,it)
+        root.after(100, f_animation, event, it)
 
 def action(event_num):
     prev_event = event_num
-
-    if event_num in {0, 3, 4, 5}:
-        f_static(event_names[event_num], 0)
-        root.after(1000, event_choice, prev_event)
-
-    if event_num == 1:
-        f_left(0)
-        root.after(1000, event_choice, prev_event)
-
-    if event_num == 2:
-        f_right(0)
-        root.after(1000, event_choice, prev_event)
+    f_animation(event_names[event_num], 0)
+    root.after(1000, event_choice, prev_event)
 
 def event_choice(prev_event): #choosing next event
     #idle, move_left, move_right, sleeping, idle_to_sleeping, sleeping_to_idle
