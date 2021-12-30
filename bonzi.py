@@ -64,10 +64,10 @@ for event_name in event_names:
         img = im_path + event_name + str(i) + ".png"
         im_frames[event_name].append(tk.PhotoImage(file=img))
 
+#initial position of the widget on the x axis
 x = 1000
 
-#working animation for static events
-def f_animation(event, it):
+def f_animation(event, it): #working animation for events
     global x
     if event == 'left':
         x -= 3
@@ -81,7 +81,7 @@ def f_animation(event, it):
         it+=1
         root.after(100, f_animation, event, it)
 
-def action(event_num):
+def action(event_num): #call the animation
     prev_event = event_num
     f_animation(event_names[event_num], 0)
     root.after(1000, event_choice, prev_event)
