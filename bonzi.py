@@ -24,7 +24,7 @@ dialogue_box = tk.Label(root, bd=0, bg='black', fg='white', height=10, wraplengt
 m = tk.Menu(root, tearoff=0)
 
 
-#dropdown menu options (trzeba zmienic tak zeby sie asynchronicznie wykonywaly)
+#dropdown menu options
 def menu_nuta():
     wb.open("https://open.spotify.com/track/3VIJBrMpvimHEw5wtPh2wB?si=633932ef19b842e7")
 m.add_command(label='Dobra nuta', command=menu_nuta)
