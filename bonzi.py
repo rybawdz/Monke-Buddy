@@ -15,7 +15,7 @@ height = root.winfo_screenheight()
 
 root.config(highlightbackground='black')
 label = tk.Label(root, bd=0,bg='black')
-label.pack(side=TOP)
+label.pack()
 
 dialogue_box = tk.Label(root, bd=0, bg='black', fg='white', height=10)
 dialogue_box.pack(side=BOTTOM)
@@ -27,6 +27,17 @@ m = tk.Menu(root, tearoff=0)
 def menu_nuta():
     wb.open("https://open.spotify.com/track/3VIJBrMpvimHEw5wtPh2wB?si=633932ef19b842e7")
 m.add_command(label='Dobra nuta', command=menu_nuta)
+
+dialogue_box_visible = True
+def toggle_dialogue_box():
+    global dialogue_box_visible
+    if dialogue_box_visible:
+        dialogue_box.pack_forget()
+        dialogue_box_visible = False
+    else:
+        dialogue_box.pack(side=BOTTOM)
+        dialogue_box_visible = True
+m.add_command(label='Toggle dialogue box', command=toggle_dialogue_box)
 
 def dad_joke():
     f = open('jokes.txt', 'r', encoding='Utf-8')
