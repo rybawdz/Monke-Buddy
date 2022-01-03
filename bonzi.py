@@ -34,7 +34,7 @@ def t_dad_joke():
     x = random.randint(0, len(jokes))
     dialogue_box.config(text=jokes[x].strip())
 
-    time.sleep(8)
+    time.sleep(5)
 
     dialogue_box.place_forget()
     f.close()
@@ -56,9 +56,14 @@ event_names = ["idle", "left" ,"right" , "sleeping", "idle_to_sleeping", "sleepi
 #dictionary of animation frames for each event
 im_frames = dd(lambda:[])
 for event_name in event_names:
-    for i in range(1, 5):
-        img = im_path + event_name + str(i) + ".png"
-        im_frames[event_name].append(tk.PhotoImage(file=img))
+    i = 1
+    while True:
+        try:
+            img = im_path + event_name + str(i) + ".png"
+            im_frames[event_name].append(tk.PhotoImage(file=img))
+            i = i + 1
+        except tk._tkinter.TclError:
+            break
 
 #initial position of the widget on the x axis
 x = 1000
