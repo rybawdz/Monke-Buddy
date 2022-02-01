@@ -37,8 +37,9 @@ def t_say_hello():
 
     time.sleep(5)
 
-    dialogue_box.place_forget()
-    dialogue_border.place_forget()
+    if len(threading.enumerate()) <= 2:
+        dialogue_box.place_forget()
+        dialogue_border.place_forget()
     m.entryconfig('Say hello', state='normal')
     f.close()
 def say_hello():
@@ -63,8 +64,9 @@ def t_dad_joke():
 
     time.sleep(5)
 
-    dialogue_box.place_forget()
-    dialogue_border.place_forget()
+    if len(threading.enumerate()) <= 2:
+        dialogue_box.place_forget()
+        dialogue_border.place_forget()
     m.entryconfig('Dad joke', state='normal')
     f.close()
 def dad_joke():
