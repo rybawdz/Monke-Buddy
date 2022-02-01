@@ -5,6 +5,7 @@ import webbrowser as wb
 from collections import defaultdict as dd
 import threading
 import time
+import json
 
 #path to sprites
 im_path = "temp_sprites/"
@@ -25,6 +26,26 @@ dialogue_box = tk.Label(dialogue_border, bd=0, bg='#1a1918', fg='white', wraplen
 m = tk.Menu(root, tearoff=0)
 
 #dropdown menu options
+def t_say_hello():
+    m.entryconfig('Say hello', state='disabled')
+    f = open("settings.json")
+    data = json.load(f)
+
+    dialogue_border.place(anchor='s', relheight=0.3, relwidth=0.94, relx=0.5, rely=0.98)
+    dialogue_box.place(relheight=0.96, relwidth=0.98, anchor='center', relx=0.5, rely=0.5)
+    dialogue_box.config(text=data['greeting'] + ', nazywam sie ' + data['name'])
+
+    time.sleep(5)
+
+    dialogue_box.place_forget()
+    dialogue_border.place_forget()
+    m.entryconfig('Say hello', state='normal')
+    f.close()
+def say_hello():
+    x = threading.Thread(target=t_say_hello, daemon=True)
+    x.start()
+m.add_command(label='Say hello', command=say_hello)
+
 def menu_nuta():
     wb.open("https://open.spotify.com/track/3VIJBrMpvimHEw5wtPh2wB?si=633932ef19b842e7")
 m.add_command(label='Dobra nuta', command=menu_nuta)
