@@ -10,6 +10,7 @@ import time
 im_path = "temp_sprites/"
 
 root = tk.Tk()
+root.title('Monke Buddy')
 width = root.winfo_screenwidth()
 height = root.winfo_screenheight()
 
@@ -17,7 +18,8 @@ root.config(highlightbackground='black')
 label = tk.Label(root, bd=0,bg='black')
 label.place(relwidth=1, relheight=1, relx=0, rely=0)
 
-dialogue_box = tk.Label(root, bd=0, bg='black', fg='white', wraplength=100, font=('Arial', 6))
+dialogue_border = tk.Frame(root, background='white')
+dialogue_box = tk.Label(dialogue_border, bd=0, bg='black', fg='white', wraplength=250, font=('Helvetica', 15))
 
 m = tk.Menu(root, tearoff=0)
 
@@ -27,8 +29,11 @@ def menu_nuta():
 m.add_command(label='Dobra nuta', command=menu_nuta)
 
 def t_dad_joke():
+    m.entryconfig('Dad joke', state='disabled')
     f = open('jokes.txt', 'r', encoding='Utf-8')
-    dialogue_box.place(anchor='s', relheight=0.4, relwidth=1, relx=0.5, rely=1)
+
+    dialogue_border.place(anchor='s', relheight=0.3, relwidth=0.94, relx=0.5, rely=0.98)
+    dialogue_box.place(relheight=0.96, relwidth=0.98, anchor='center', relx=0.5, rely=0.5)
 
     jokes = f.readlines()
     x = random.randint(0, len(jokes))
@@ -37,6 +42,8 @@ def t_dad_joke():
     time.sleep(5)
 
     dialogue_box.place_forget()
+    dialogue_border.place_forget()
+    m.entryconfig('Dad joke', state='normal')
     f.close()
 def dad_joke():
     x = threading.Thread(target=t_dad_joke, daemon=True)
@@ -70,7 +77,7 @@ def f_animation(event, it): #working animation for events
     elif event == 'right':
         x += 3
     img = im_frames[event][it]
-    root.geometry("100x100+"+str(x)+"+300")
+    root.geometry("300x300+"+str(x)+"+300")
     label.config(image=img)
     if it+1 < 4:
         it+=1
