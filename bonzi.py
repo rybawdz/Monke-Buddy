@@ -11,15 +11,16 @@ im_path = "temp_sprites/"
 
 root = tk.Tk()
 root.title('Monke Buddy')
-width = root.winfo_screenwidth()
-height = root.winfo_screenheight()
 
-root.config(highlightbackground='black')
+root.wm_attributes('-transparentcolor','black')
+root.overrideredirect(True)
+root.wm_attributes('-topmost', True)
+
 label = tk.Label(root, bd=0,bg='black')
 label.place(relwidth=1, relheight=1, relx=0, rely=0)
 
 dialogue_border = tk.Frame(root, background='white')
-dialogue_box = tk.Label(dialogue_border, bd=0, bg='black', fg='white', wraplength=250, font=('Helvetica', 15))
+dialogue_box = tk.Label(dialogue_border, bd=0, bg='#1a1918', fg='white', wraplength=250, font=('Helvetica', 14))
 
 m = tk.Menu(root, tearoff=0)
 
@@ -49,6 +50,11 @@ def dad_joke():
     x = threading.Thread(target=t_dad_joke, daemon=True)
     x.start()
 m.add_command(label='Dad joke', command=dad_joke)
+
+def exit():
+    root.destroy()
+m.add_separator()
+m.add_command(label='Exit', command='exit')
 
 def do_popup(event):
     try:
