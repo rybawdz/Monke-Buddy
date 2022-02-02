@@ -6,6 +6,7 @@ from collections import defaultdict as dd
 import threading
 import time
 import json
+import wikipedia as wiki
 
 #path to sprites
 im_path = "temp_sprites/"
@@ -85,6 +86,47 @@ def t_say_hello():
         dialogue_box.config(text='')
     m.entryconfig('Say hello', state='normal')
     f.close()
+
+def t_ciekawostka():
+    global input
+    dialogue_box.configure(text='')
+    dialogue_border.place(anchor='s', relheight=0.3, relwidth=0.94, relx=0.5, rely=0.98)
+    dialogue_box.place(relheight=0.96, relwidth=0.98, anchor='center', relx=0.5, rely=0.5)
+    input_field.place(anchor='center', relx=0.5, rely=0.3)
+    submit_button.place(anchor='center', relx=0.5, rely=0.6)
+
+    label.unbind('<Button-3>')
+    submit_button.wait_variable(input) #Wait for the submit
+    label.bind('<Button-3>', do_popup)
+
+    m.entryconfig('Ciekawostka', state='disabled')
+
+    dialogue_border.place(anchor='s', relheight=0.3, relwidth=0.94, relx=0.5, rely=0.98)
+    dialogue_box.place(relheight=0.96, relwidth=0.98, anchor='center', relx=0.5, rely=0.5)
+    dialogue_box.configure(font=('Helvetica', 9))
+    query = str(input.get())
+   
+    try:
+        results = wiki.summary(query, sentences=1, auto_suggest=False, redirect=True)
+        
+    except wiki.exceptions.DisambiguationError:
+        results="No such page found."
+
+    dialogue_box.config(text=results)
+    time.sleep(5)
+
+
+    if len(threading.enumerate()) <= 2:
+        dialogue_box.place_forget()
+        dialogue_border.place_forget()
+        dialogue_box.config(text='')
+
+    dialogue_box.configure(font=('Helvetica', 14))
+    m.entryconfig('Ciekawostka', state='normal')
+
+    
+    
+
 def say_hello():
     x = threading.Thread(target=t_say_hello, daemon=True)
     x.start()
@@ -93,6 +135,13 @@ m.add_command(label='Say hello', command=say_hello)
 def menu_nuta():
     wb.open("https://open.spotify.com/track/3VIJBrMpvimHEw5wtPh2wB?si=633932ef19b842e7")
 m.add_command(label='Dobra nuta', command=menu_nuta)
+
+def ciekawostka():
+    x = threading.Thread(target=t_ciekawostka, args=(), daemon=True)
+    x.start()
+
+m.add_command(label='Ciekawostka', command=ciekawostka)
+m.add_separator()
 
 def t_dad_joke():
     m.entryconfig('Dad joke', state='disabled')
