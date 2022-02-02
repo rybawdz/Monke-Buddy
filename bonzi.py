@@ -26,6 +26,48 @@ dialogue_box = tk.Label(dialogue_border, bd=0, bg='#1a1918', fg='white', wraplen
 m = tk.Menu(root, tearoff=0)
 
 #dropdown menu options
+input_field = tk.Entry(dialogue_box)
+input = tk.StringVar()
+
+def get_input():
+    global input
+    input.set(input_field.get())
+
+    input_field.configure(text='')
+    submit_button.place_forget()
+    input_field.place_forget()
+    dialogue_box.place_forget()
+    dialogue_border.place_forget()
+submit_button = tk.Button(dialogue_box, text="Submit", command=get_input)
+
+def t_change_settings(setting):
+    global input
+    dialogue_box.configure(text='')
+    dialogue_border.place(anchor='s', relheight=0.3, relwidth=0.94, relx=0.5, rely=0.98)
+    dialogue_box.place(relheight=0.96, relwidth=0.98, anchor='center', relx=0.5, rely=0.5)
+    input_field.place(anchor='center', relx=0.5, rely=0.3)
+    submit_button.place(anchor='center', relx=0.5, rely=0.6)
+
+    label.unbind('<Button-3>')
+    submit_button.wait_variable(input) #Wait for the submit
+    label.bind('<Button-3>', do_popup)
+
+    f = open('settings.json', 'r+')
+    data = json.load(f)
+
+    data[setting] = input.get()
+    f.seek(0)
+    json.dump(data, f)
+    f.truncate()
+
+    f.close()
+
+def change_name():
+    x = threading.Thread(target=t_change_settings, args=('name',), daemon=True)
+    x.start()
+m.add_command(label='Change name', command=change_name)
+m.add_separator()
+
 def t_say_hello():
     m.entryconfig('Say hello', state='disabled')
     f = open("settings.json")
@@ -40,6 +82,7 @@ def t_say_hello():
     if len(threading.enumerate()) <= 2:
         dialogue_box.place_forget()
         dialogue_border.place_forget()
+        dialogue_box.config(text='')
     m.entryconfig('Say hello', state='normal')
     f.close()
 def say_hello():
@@ -67,6 +110,7 @@ def t_dad_joke():
     if len(threading.enumerate()) <= 2:
         dialogue_box.place_forget()
         dialogue_border.place_forget()
+        dialogue_box.config(text='')
     m.entryconfig('Dad joke', state='normal')
     f.close()
 def dad_joke():
