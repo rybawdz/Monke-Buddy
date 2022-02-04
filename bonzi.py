@@ -51,10 +51,19 @@ def hide_dialogue_box():
     dialogue_box.place_forget() 
     dialogue_border.place_forget()
 
+input_flag = False
+def default_input_clear(event):
+    global input_flag
+    if input_flag == False:
+        input_field.delete(0, tk.END)
+    input_flag = True
+input_field.bind('<Button-1>', default_input_clear)
+
 #dropdown menu options
 def t_change_settings(setting):
     global input
     show_dialogue_box('input') #Show dialogue box in input mode
+    input_field.insert(tk.END, 'Type in new ' + setting) #Default message in the input field
 
     label.unbind('<Button-3>')
     submit_button.wait_variable(input) #Wait for the submit
@@ -69,6 +78,8 @@ def t_change_settings(setting):
     json.dump(data, f)
     f.truncate()
 
+    global input_flag
+    input_flag = False
     f.close()
 
 def t_say_hello():
@@ -91,6 +102,7 @@ def t_say_hello():
 def t_ciekawostka():
     global input
     show_dialogue_box('input')
+    input_field.insert(tk.END, 'Type in any word') #Default message in the input field
 
     label.unbind('<Button-3>') #Disable the whole menu until submitting input
     submit_button.wait_variable(input) 
@@ -99,13 +111,14 @@ def t_ciekawostka():
     m.entryconfig('Ciekawostka', state='disabled')
 
     show_dialogue_box('text')
+    dialogue_box.config(text='Wait...')
     dialogue_box.configure(font=('Helvetica', 9)) #Make the font smaller for a while
     query = str(input.get())
    
     try:
         results = wiki.summary(query, sentences=1, auto_suggest=False, redirect=True)  
-    except wiki.exceptions.DisambiguationError:
-        results="No such page found."
+    except:
+        results="Yikes, try another query"
 
     dialogue_box.config(text=results)
 
@@ -114,6 +127,8 @@ def t_ciekawostka():
     if len(threading.enumerate()) <= 2:
         hide_dialogue_box()
 
+    global input_flag
+    input_flag = False
     m.entryconfig('Ciekawostka', state='normal')
     dialogue_box.configure(font=('Helvetica', 14)) #Make the font size normal again
 
@@ -140,15 +155,20 @@ def change_name():
     x.start()
 m.add_command(label='Change name', command=change_name)
 
+def change_greeting():
+    x = threading.Thread(target=t_change_settings, args=('greeting',), daemon=True)
+    x.start()
+m.add_command(label='Change greeting', command=change_greeting)
+
 m.add_separator()
 def say_hello(): 
     x = threading.Thread(target=t_say_hello, daemon=True)
     x.start()
 m.add_command(label='Say hello', command=say_hello)
 
-def menu_nuta():
+def song():
     wb.open("https://open.spotify.com/track/3VIJBrMpvimHEw5wtPh2wB?si=633932ef19b842e7")
-m.add_command(label='Dobra nuta', command=menu_nuta)
+m.add_command(label='Great song', command=song)
 
 def ciekawostka():
     x = threading.Thread(target=t_ciekawostka, args=(), daemon=True)
