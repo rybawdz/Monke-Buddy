@@ -1,4 +1,3 @@
-#GitHub test
 import tkinter as tk
 import random
 import webbrowser as wb
@@ -11,123 +10,138 @@ import wikipedia as wiki
 #path to sprites
 im_path = "temp_sprites/"
 
-root = tk.Tk()
+root = tk.Tk() #Main window widget
 root.title('Monke Buddy')
 
 root.wm_attributes('-transparentcolor','black')
 root.overrideredirect(True)
 root.wm_attributes('-topmost', True)
 
-label = tk.Label(root, bd=0,bg='black')
+label = tk.Label(root, bd=0,bg='black') #Container for the sprites
 label.place(relwidth=1, relheight=1, relx=0, rely=0)
 
 dialogue_border = tk.Frame(root, background='white')
 dialogue_box = tk.Label(dialogue_border, bd=0, bg='#1a1918', fg='white', wraplength=250, font=('Helvetica', 14))
 
-m = tk.Menu(root, tearoff=0)
+m = tk.Menu(root, tearoff=0) #Dropdown menu object
 
-#dropdown menu options
-input_field = tk.Entry(dialogue_box)
-input = tk.StringVar()
+input_field = tk.Entry(dialogue_box) #Input field object
 
+input = tk.StringVar() #Global variable for storing input
 def get_input():
     global input
-    input.set(input_field.get())
+    input.set(input_field.get()) #Save input from input_field into a global variable
+    hide_dialogue_box()
+submit_button = tk.Button(dialogue_box, text="Submit", command=get_input) #Button object for submitting input
 
-    input_field.configure(text='')
-    submit_button.place_forget()
-    input_field.place_forget()
-    dialogue_box.place_forget()
-    dialogue_border.place_forget()
-submit_button = tk.Button(dialogue_box, text="Submit", command=get_input)
+def show_dialogue_box(type):
+    dialogue_box.configure(text='') #Clear dialogue box before showing it
 
-def t_change_settings(setting):
-    global input
-    dialogue_box.configure(text='')
     dialogue_border.place(anchor='s', relheight=0.3, relwidth=0.94, relx=0.5, rely=0.98)
     dialogue_box.place(relheight=0.96, relwidth=0.98, anchor='center', relx=0.5, rely=0.5)
-    input_field.place(anchor='center', relx=0.5, rely=0.3)
-    submit_button.place(anchor='center', relx=0.5, rely=0.6)
+    if type == 'input':
+        input_field.place(anchor='center', relx=0.5, rely=0.3)
+        submit_button.place(anchor='center', relx=0.5, rely=0.6)
+
+def hide_dialogue_box():
+    dialogue_box.config(text='') #Clear dialogue box, just in case
+    input_field.delete(0, tk.END) #Clear the input field
+    submit_button.place_forget() #Hide everything dialogue box related
+    input_field.place_forget() 
+    dialogue_box.place_forget() 
+    dialogue_border.place_forget()
+
+#dropdown menu options
+def t_change_settings(setting):
+    global input
+    show_dialogue_box('input') #Show dialogue box in input mode
 
     label.unbind('<Button-3>')
     submit_button.wait_variable(input) #Wait for the submit
     label.bind('<Button-3>', do_popup)
 
-    f = open('settings.json', 'r+')
+    f = open('settings.json', 'r+') #Open settings.json to save new settings
     data = json.load(f)
 
-    data[setting] = input.get()
-    f.seek(0)
+    data[setting] = input.get() #Get the new setting value from input
+
+    f.seek(0) #Update settings.json
     json.dump(data, f)
     f.truncate()
 
     f.close()
 
-def change_name():
-    x = threading.Thread(target=t_change_settings, args=('name',), daemon=True)
-    x.start()
-m.add_command(label='Change name', command=change_name)
-m.add_separator()
-
 def t_say_hello():
-    m.entryconfig('Say hello', state='disabled')
-    f = open("settings.json")
+    m.entryconfig('Say hello', state='disabled') #Disable 'Say Hello' option from the dropdown menu
+
+    f = open("settings.json") #Open the settings.json file and load the data from it into a dict
     data = json.load(f)
 
-    dialogue_border.place(anchor='s', relheight=0.3, relwidth=0.94, relx=0.5, rely=0.98)
-    dialogue_box.place(relheight=0.96, relwidth=0.98, anchor='center', relx=0.5, rely=0.5)
-    dialogue_box.config(text=data['greeting'] + ', nazywam sie ' + data['name'])
+    show_dialogue_box('text') #Show dialogue box in text mode 
+    dialogue_box.config(text=data['greeting'] + ', my name is ' + data['name']) #Display greeting in dialogue box
 
-    time.sleep(5)
+    time.sleep(5) #Show the greeting for 5 seconds
 
-    if len(threading.enumerate()) <= 2:
-        dialogue_box.place_forget()
-        dialogue_border.place_forget()
-        dialogue_box.config(text='')
-    m.entryconfig('Say hello', state='normal')
+    if len(threading.enumerate()) <= 2: #If there are no other threads running, hide the dialogue box
+        hide_dialogue_box()
+
+    m.entryconfig('Say hello', state='normal') #Enable 'Say Hello' option
     f.close()
 
 def t_ciekawostka():
     global input
-    dialogue_box.configure(text='')
-    dialogue_border.place(anchor='s', relheight=0.3, relwidth=0.94, relx=0.5, rely=0.98)
-    dialogue_box.place(relheight=0.96, relwidth=0.98, anchor='center', relx=0.5, rely=0.5)
-    input_field.place(anchor='center', relx=0.5, rely=0.3)
-    submit_button.place(anchor='center', relx=0.5, rely=0.6)
+    show_dialogue_box('input')
 
-    label.unbind('<Button-3>')
-    submit_button.wait_variable(input) #Wait for the submit
+    label.unbind('<Button-3>') #Disable the whole menu until submitting input
+    submit_button.wait_variable(input) 
     label.bind('<Button-3>', do_popup)
 
     m.entryconfig('Ciekawostka', state='disabled')
 
-    dialogue_border.place(anchor='s', relheight=0.3, relwidth=0.94, relx=0.5, rely=0.98)
-    dialogue_box.place(relheight=0.96, relwidth=0.98, anchor='center', relx=0.5, rely=0.5)
-    dialogue_box.configure(font=('Helvetica', 9))
+    show_dialogue_box('text')
+    dialogue_box.configure(font=('Helvetica', 9)) #Make the font smaller for a while
     query = str(input.get())
    
     try:
-        results = wiki.summary(query, sentences=1, auto_suggest=False, redirect=True)
-        
+        results = wiki.summary(query, sentences=1, auto_suggest=False, redirect=True)  
     except wiki.exceptions.DisambiguationError:
         results="No such page found."
 
     dialogue_box.config(text=results)
-    time.sleep(5)
 
+    time.sleep(7)
 
     if len(threading.enumerate()) <= 2:
-        dialogue_box.place_forget()
-        dialogue_border.place_forget()
-        dialogue_box.config(text='')
+        hide_dialogue_box()
 
-    dialogue_box.configure(font=('Helvetica', 14))
     m.entryconfig('Ciekawostka', state='normal')
+    dialogue_box.configure(font=('Helvetica', 14)) #Make the font size normal again
 
-    
-    
+def t_dad_joke():
+    m.entryconfig('Dad joke', state='disabled')
+    f = open('jokes.txt', 'r', encoding='Utf-8') #Open the file containing epic jokes
 
-def say_hello():
+    show_dialogue_box('text') #Show dialogue box in text mode
+
+    jokes = f.readlines() #Randomly select a joke to display
+    x = random.randint(0, len(jokes))
+    dialogue_box.config(text=jokes[x].strip())
+
+    time.sleep(5)
+
+    if len(threading.enumerate()) <= 2:
+        hide_dialogue_box()
+    
+    m.entryconfig('Dad joke', state='normal')
+    f.close() 
+
+def change_name():
+    x = threading.Thread(target=t_change_settings, args=('name',), daemon=True)
+    x.start()
+m.add_command(label='Change name', command=change_name)
+
+m.add_separator()
+def say_hello(): 
     x = threading.Thread(target=t_say_hello, daemon=True)
     x.start()
 m.add_command(label='Say hello', command=say_hello)
@@ -139,37 +153,16 @@ m.add_command(label='Dobra nuta', command=menu_nuta)
 def ciekawostka():
     x = threading.Thread(target=t_ciekawostka, args=(), daemon=True)
     x.start()
-
 m.add_command(label='Ciekawostka', command=ciekawostka)
-m.add_separator()
 
-def t_dad_joke():
-    m.entryconfig('Dad joke', state='disabled')
-    f = open('jokes.txt', 'r', encoding='Utf-8')
-
-    dialogue_border.place(anchor='s', relheight=0.3, relwidth=0.94, relx=0.5, rely=0.98)
-    dialogue_box.place(relheight=0.96, relwidth=0.98, anchor='center', relx=0.5, rely=0.5)
-
-    jokes = f.readlines()
-    x = random.randint(0, len(jokes))
-    dialogue_box.config(text=jokes[x].strip())
-
-    time.sleep(5)
-
-    if len(threading.enumerate()) <= 2:
-        dialogue_box.place_forget()
-        dialogue_border.place_forget()
-        dialogue_box.config(text='')
-    m.entryconfig('Dad joke', state='normal')
-    f.close()
 def dad_joke():
     x = threading.Thread(target=t_dad_joke, daemon=True)
     x.start()
 m.add_command(label='Dad joke', command=dad_joke)
 
+m.add_separator()
 def exit():
     root.destroy()
-m.add_separator()
 m.add_command(label='Exit', command='exit')
 
 def do_popup(event):
