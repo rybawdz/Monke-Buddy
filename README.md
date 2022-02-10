@@ -17,8 +17,8 @@ Kosztorys:
 - [X] 2. Modyfikacja kodu tak by zachowanie małpki było bardziej naturalne używając systemu wag do losowania kolejnych
 czynności (Aby uniknąć sytuacji typu: małpka zasypia po czym natychmiastowo się budzi): 2p
 - [X] 3. Napisanie kodu odpowiedzialnego za wyświetlanie kolejnych klatek animacji w zależności od wykonywanej aktualnie czynności: 2p
-- [ ] 4. Narysowanie sprite'ów małpki: 1p
-- [ ] 5. Narysowanie różnych wariacji ubiorów małpki, między którymi można się przełączać: 1p
+- [X] 4. Narysowanie sprite'ów małpki: 1p
+- [X] 5. Narysowanie różnych wariacji ubiorów małpki, między którymi można się przełączać: 1p
 - [X] 6. Implementacja kodu odpowiedzialnego za zapisywanie ustawień użytkownika do pliku tekstowego (np. ubioru albo imienia małpki),
 aby przy kolejnych uruchomieniach programu były one automatycznie wczytywane: 2p
 - [X] 7. Implementacja kodu odpowiedzialnego za wyświetlanie okna dialogowego używanego przez małpkę do komunikacji z użytkownikiem
