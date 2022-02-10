@@ -27,6 +27,17 @@ m = tk.Menu(root, tearoff=0) #Dropdown menu object
 
 input_field = tk.Entry(dialogue_box) #Input field object
 
+skin = 'default'
+def load_skin():
+    global skin
+
+    f = open('settings.json')
+    data = json.load(f)
+    skin = data['skin']
+    
+    f.close()
+load_skin()
+
 input = tk.StringVar() #Global variable for storing input
 def get_input():
     global input
@@ -85,13 +96,14 @@ def t_change_settings(setting):
     f.close()
 
 def t_say_hello():
+    dialogue_box.configure(font=('Helvetica', 14))
     m.entryconfig('Say hello', state='disabled') #Disable 'Say Hello' option from the dropdown menu
 
     f = open("settings.json") #Open the settings.json file and load the data from it into a dict
     data = json.load(f)
 
     show_dialogue_box('text') #Show dialogue box in text mode 
-    dialogue_box.config(text=data['greeting'] + ', my name is ' + data['name']) #Display greeting in dialogue box
+    dialogue_box.config(text=data['greeting'] + ', my name is ' + data['name']) #Display greeting and name in dialogue box
 
     time.sleep(5) #Show the greeting for 5 seconds
 
@@ -110,7 +122,7 @@ def t_ciekawostka():
     submit_button.wait_variable(input) 
     label.bind('<Button-3>', do_popup) #Enable the menu again
 
-    m.entryconfig('Ciekawostka', state='disabled')
+    m.entryconfig('Trivia', state='disabled')
 
     show_dialogue_box('text')
     dialogue_box.config(text='Wait...') #Display a message while the trivia is getting fetched
@@ -131,10 +143,11 @@ def t_ciekawostka():
 
     global input_flag
     input_flag = False
-    m.entryconfig('Ciekawostka', state='normal')
+    m.entryconfig('Trivia', state='normal')
     dialogue_box.configure(font=('Helvetica', 14)) #Make the font size normal again
 
 def t_dad_joke():
+    dialogue_box.configure(font=('Helvetica', 14))
     m.entryconfig('Dad joke', state='disabled')
     f = open('jokes.txt', 'r', encoding='Utf-8') #Open the file containing epic jokes
 
@@ -152,6 +165,52 @@ def t_dad_joke():
     m.entryconfig('Dad joke', state='normal')
     f.close() 
 
+def save_skin():
+    global skin
+    f = open('settings.json', 'r+')
+    data = json.load(f)
+
+    data['skin'] = skin
+
+    f.seek(0) #Update settings.json
+    json.dump(data, f)
+    f.truncate()
+
+    f.close()
+
+def b_command(skin_name):
+    global skin
+    skin = skin_name
+
+    save_skin()
+    button_default_skin.place_forget()
+    button_skin1.place_forget()
+
+    show_dialogue_box('text')
+    dialogue_box.config(text='Wait...')
+
+button_default_skin = tk.Button(dialogue_box, text = 'Default', command=lambda:b_command('default'))
+button_skin1 = tk.Button(dialogue_box, text = 'Skin 1', command=lambda:b_command('skin1'))
+def t_change_skin():
+    show_dialogue_box('text')
+    m.entryconfig('Change skin', state='disabled')
+
+    button_default_skin.place(anchor='center', relx=0.3, rely=0.5, relwidth=0.2)
+    button_skin1.place(anchor='center', relx=0.7, rely=0.5, relwidth=0.2)
+
+    time.sleep(5)
+
+    button_default_skin.place_forget()
+    button_skin1.place_forget()
+    if len(threading.enumerate()) <= 2:
+        hide_dialogue_box()
+    m.entryconfig('Change skin', state='normal')
+
+def change_skin():
+    x = threading.Thread(target=t_change_skin, daemon=True)
+    x.start()
+m.add_command(label='Change skin', command=change_skin)
+
 def change_name(): #Change the monkeys name and save it to settings.json
     x = threading.Thread(target=t_change_settings, args=('name',), daemon=True)
     x.start()
@@ -168,24 +227,39 @@ def say_hello(): #Display the greeting and name saved in settings.json
     x.start()
 m.add_command(label='Say hello', command=say_hello)
 
-def song():
+def song(): #Open a song from spotify
     wb.open("https://open.spotify.com/track/3VIJBrMpvimHEw5wtPh2wB?si=633932ef19b842e7")
 m.add_command(label='Great song', command=song)
 
 def ciekawostka(): #Display info from wikipedia about input topic 
     x = threading.Thread(target=t_ciekawostka, args=(), daemon=True)
     x.start()
-m.add_command(label='Ciekawostka', command=ciekawostka)
+m.add_command(label='Trivia', command=ciekawostka)
 
 def dad_joke(): #Tell a random joke saved in jokes.txt
     x = threading.Thread(target=t_dad_joke, daemon=True)
     x.start()
 m.add_command(label='Dad joke', command=dad_joke)
 
+def t_display_goodbye(): #Say goodbye
+    f = open('settings.json')
+    data = json.load(f)
+    label.unbind('<Button-3>')
+
+    show_dialogue_box('text')
+    goodbye = data['goodbye']
+    dialogue_box.config(text=goodbye)
+
+    time.sleep(2)
+
+    f.close()
+    root.destroy()
+
 m.add_separator()
 def exit(): #Close the program (duh)
-    root.destroy()
-m.add_command(label='Exit', command='exit')
+    x = threading.Thread(target=t_display_goodbye, daemon=True)
+    x.start()
+m.add_command(label='Exit', command=exit)
 
 def do_popup(event): #Display dropdown menu on right-click
     try:
@@ -195,25 +269,39 @@ def do_popup(event): #Display dropdown menu on right-click
 label.bind('<Button-3>', do_popup)
 
 #arrays of names of events
-event_names = ["idle", "left" ,"right" , "sleeping", "idle_to_sleeping", "sleeping_to_idle"]
+default_event_names = ["idle", "left" ,"right" , "sleeping", "idle_to_sleeping", "sleeping_to_idle"]
+skin1_event_names = ["idle_1", "left_1" ,"right_1" , "sleeping_1", "idle_to_sleeping_1", "sleeping_to_idle_1"]
 
 #dictionary of animation frames for each event
-im_frames = dd(lambda:[])  
-for event_name in event_names: 
+default_im_frames = dd(lambda:[]) #Default skin
+for event_name in default_event_names: 
     for i in range(1, 5):
         img = im_path + event_name + str(i) + ".png"
-        im_frames[event_name].append(tk.PhotoImage(file=img))
+        default_im_frames[event_name].append(tk.PhotoImage(file=img))
+skin1_im_frames = dd(lambda:[]) #Skin 1 
+for event_name in skin1_event_names: 
+    for i in range(1, 5):
+        img = im_path + event_name + str(i) + ".png"
+        skin1_im_frames[event_name].append(tk.PhotoImage(file=img))
 
 #initial position of the widget on the x axis
 x = 1000
 
 def f_animation(event, it): #working animation for events
     global x
+    global skin
+
     if event == 'left': #Move the window on the screen to the left/right
         x -= 3
     elif event == 'right':
         x += 3
-    img = im_frames[event][it] #Get current frame
+    try:
+        if skin == 'default':
+            img = default_im_frames[event][it] 
+        if skin == 'skin1':
+            img = skin1_im_frames[event][it] 
+    except IndexError:
+        img = tk.PhotoImage(file="temp_sprites/blank.png")
     root.geometry("300x300+"+str(x)+"+300") #Size and place of the widget
     label.config(image=img) #Change the background image to display the chosen sprite
     if it+1 < 4: #Loop over every frame of the animation
@@ -221,8 +309,13 @@ def f_animation(event, it): #working animation for events
         root.after(100, f_animation, event, it)
 
 def action(event_num): #call the animation
+    global skin
+
     prev_event = event_num
-    f_animation(event_names[event_num], 0)
+    if skin == 'default':
+        f_animation(default_event_names[event_num], 0)
+    elif skin == 'skin1':
+        f_animation(skin1_event_names[event_num], 0)
     root.after(1000, event_choice, prev_event) #Call event_choice(prev_event) after 1000ms
 
 def event_choice(prev_event): #choose next event
