@@ -23,7 +23,7 @@ czynności (Aby uniknąć sytuacji typu: małpka zasypia po czym natychmiastowo 
 aby przy kolejnych uruchomieniach programu były one automatycznie wczytywane: 2p
 - [X] 7. Implementacja kodu odpowiedzialnego za wyświetlanie okna dialogowego używanego przez małpkę do komunikacji z użytkownikiem
 podczas wykonywanie pewnych konkretnych czynności: 2p
-- [ ] 8. Implementacja pełnego programu ze wszystkimi zaplanowanymi funkcjami, umożliwienie użytkownikowi wydawania poleceń, które używają tych funkcji: 3p
+- [X] 8. Implementacja pełnego programu ze wszystkimi zaplanowanymi funkcjami, umożliwienie użytkownikowi wydawania poleceń, które używają tych funkcji: 3p
 - [X] 9. Zapoznanie się z biblioteką Tkinter: 2p
 - [X] 10. Zapoznanie się z biblioteką threading: 2p
 - [X] 11. Sporządzenie kosztorysu, wymyślenie projektu: 1p
